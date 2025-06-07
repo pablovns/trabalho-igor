@@ -5,17 +5,13 @@ import io.github.pablovns.domain.Noticia;
 import io.github.pablovns.utils.LocalDateTimeAdapter;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Serviço responsável por buscar notícias da API do IBGE.
@@ -92,24 +88,13 @@ public class NoticiaService {
             throw new IOException("Erro na requisição: " + response.statusCode());
         }
 
-        JsonArray items = JsonParser.parseString(response.body())
-                .getAsJsonObject()
-                .getAsJsonArray("items");
-
+        JsonObject responseJson = gson.fromJson(response.body(), JsonObject.class);
+        JsonArray items = responseJson.getAsJsonArray("items");
         List<Noticia> noticias = new ArrayList<>();
+
         for (JsonElement item : items) {
-            JsonObject noticiaJson = item.getAsJsonObject();
-            
             try {
-                Noticia noticia = new Noticia(
-                        noticiaJson.get("id").getAsLong(),
-                        noticiaJson.get("titulo").getAsString(),
-                        noticiaJson.get("introducao").getAsString(),
-                        LocalDateTime.parse(noticiaJson.get("data_publicacao").getAsString(), 
-                                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
-                        noticiaJson.get("link").getAsString(),
-                        noticiaJson.get("tipo").getAsString()
-                );
+                Noticia noticia = gson.fromJson(item, Noticia.class);
                 noticias.add(noticia);
             } catch (Exception e) {
                 System.err.println("Erro ao processar notícia: " + e.getMessage());

@@ -1,5 +1,7 @@
 package io.github.pablovns.domain;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.time.LocalDateTime;
 
 /**
@@ -9,6 +11,7 @@ public class Noticia {
     private Long id;
     private String titulo;
     private String introducao;
+    @SerializedName("data_publicacao")
     private LocalDateTime dataPublicacao;
     private String link;
     private TipoNoticia tipo;

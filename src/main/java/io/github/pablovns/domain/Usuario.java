@@ -8,15 +8,20 @@ import java.util.List;
  */
 public class Usuario {
     private String nome;
-    private List<Noticia> noticiasFavoritas;
-    private List<Noticia> noticiasLidas;
-    private List<Noticia> noticiasParaLerDepois;
+    private final List<Noticia> noticiasFavoritas;
+    private final List<Noticia> noticiasLidas;
+    private final List<Noticia> noticiasParaLerDepois;
 
-    public Usuario(String nome) {
-        this.nome = nome;
+    // Construtor padrão necessário para o Gson
+    public Usuario() {
         this.noticiasFavoritas = new ArrayList<>();
         this.noticiasLidas = new ArrayList<>();
         this.noticiasParaLerDepois = new ArrayList<>();
+    }
+
+    public Usuario(String nome) {
+        this();  // Chama o construtor padrão para inicializar as listas
+        this.nome = nome;
     }
 
     public String getNome() {
