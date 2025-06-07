@@ -11,12 +11,19 @@ public class Noticia {
     private String introducao;
     private LocalDateTime dataPublicacao;
     private String link;
-    private String tipo;
+    private TipoNoticia tipo;
     private boolean lida;
     private boolean favorita;
     private boolean paraLerDepois;
 
-    public Noticia(Long id, String titulo, String introducao, LocalDateTime dataPublicacao, String link, String tipo) {
+    // Construtor padrão necessário para o Gson
+    public Noticia() {
+        this.lida = false;
+        this.favorita = false;
+        this.paraLerDepois = false;
+    }
+
+    public Noticia(Long id, String titulo, String introducao, LocalDateTime dataPublicacao, String link, TipoNoticia tipo) {
         this.id = id;
         this.titulo = titulo;
         this.introducao = introducao;
@@ -49,7 +56,7 @@ public class Noticia {
         return link;
     }
 
-    public String getTipo() {
+    public TipoNoticia getTipo() {
         return tipo;
     }
 
@@ -89,7 +96,7 @@ public class Noticia {
                 titulo,
                 introducao,
                 dataPublicacao,
-                tipo,
+                tipo.getDescricao(),
                 link,
                 lida ? "Lida" : "Não lida",
                 favorita ? "Favorita" : "Não favorita",
