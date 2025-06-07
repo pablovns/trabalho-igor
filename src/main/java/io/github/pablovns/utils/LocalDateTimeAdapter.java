@@ -25,6 +25,7 @@ public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, Json
             try {
                 return LocalDateTime.parse(dateStr, formatter);
             } catch (DateTimeParseException ignored) {
+                // Ignora a exceção e tenta o próximo formato
             }
         }
         throw new JsonParseException("Não foi possível converter a data: " + dateStr);
