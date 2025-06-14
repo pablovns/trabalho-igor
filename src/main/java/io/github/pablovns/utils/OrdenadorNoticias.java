@@ -16,7 +16,7 @@ public class OrdenadorNoticias {
     }
 
     public static void ordenarPorData(List<Noticia> noticias) {
-        noticias.sort(Comparator.comparing(Noticia::getDataPublicacao).reversed());
+        noticias.sort(Comparator.comparing(Noticia::getDataPublicacao));
     }
 
     public static void ordenarPorTipo(List<Noticia> noticias) {

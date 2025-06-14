@@ -125,7 +125,7 @@ public class MenuPrincipal {
         }
     }
 
-    private String lerTextoNaoVazio(String mensagem) {
+    private String lerTextoValido(String mensagem) {
         while (true) {
             System.out.println(mensagem);
             String texto = scanner.nextLine().trim();
@@ -150,8 +150,8 @@ public class MenuPrincipal {
         }
 
         Optional<List<Noticia>> optionalNoticias = switch (opcao) {
-            case 1 -> noticiaService.buscarPorTitulo(lerTextoNaoVazio("Digite o título: "));
-            case 2 -> noticiaService.buscarPorPalavrasChave(lerTextoNaoVazio("Digite as palavras-chave: "));
+            case 1 -> noticiaService.buscarPorTitulo(lerTextoValido("Digite o título: "));
+            case 2 -> noticiaService.buscarPorPalavrasChave(lerTextoValido("Digite as palavras-chave: "));
             case 3 -> noticiaService.buscarPorData(lerDataValida());
             default -> Optional.empty();
         };

@@ -3,11 +3,15 @@ package io.github.pablovns.domain;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Classe que representa uma notícia do IBGE.
  */
 public class Noticia {
+    public static final DateTimeFormatter FORMATADOR = DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm:ss", Locale.of("pt", "BR"));
+
     private Long id;
     private String titulo;
     private String introducao;
@@ -98,7 +102,7 @@ public class Noticia {
                 Status: %s | %s | %s""",
                 titulo,
                 introducao,
-                dataPublicacao,
+                dataPublicacao.format(FORMATADOR),
                 tipo.getDescricao(),
                 link,
                 lida ? "Lida" : "Não lida",
