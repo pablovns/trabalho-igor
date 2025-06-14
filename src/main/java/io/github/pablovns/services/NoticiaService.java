@@ -2,7 +2,9 @@ package io.github.pablovns.services;
 
 import com.google.gson.*;
 import io.github.pablovns.domain.Noticia;
+import io.github.pablovns.domain.TipoNoticia;
 import io.github.pablovns.utils.LocalDateTimeAdapter;
+import io.github.pablovns.utils.TipoNoticiaDeserializer;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Serviço responsável por buscar notícias da API do IBGE.
@@ -30,7 +33,11 @@ public class NoticiaService {
                 .create();
     }
 
-    public List<Noticia> buscarPorTitulo(String titulo) {
+    public Optional<List<Noticia>> buscarPorTitulo(String titulo) {
+        if (titulo == null) {
+            return Optional.empty();
+        }
+
         try {
             String url = URL_BASE + "/?busca=" + titulo.replace(" ", "%20");
             return fazerRequisicao(url);
@@ -42,10 +49,15 @@ public class NoticiaService {
         } catch (Exception e) {
             System.err.println("Erro inesperado ao buscar notícias por título: " + e.getMessage());
         }
-        return new ArrayList<>();
+
+        return Optional.empty();
     }
 
-    public List<Noticia> buscarPorPalavrasChave(String palavrasChave) {
+    public Optional<List<Noticia>> buscarPorPalavrasChave(String palavrasChave) {
+        if (palavrasChave == null) {
+            return Optional.empty();
+        }
+
         try {
             String url = URL_BASE + "/?palavraChave=" + palavrasChave.replace(" ", "%20");
             return fazerRequisicao(url);
@@ -57,10 +69,15 @@ public class NoticiaService {
         } catch (Exception e) {
             System.err.println("Erro inesperado ao buscar notícias por palavras-chave: " + e.getMessage());
         }
-        return new ArrayList<>();
+
+        return Optional.empty();
     }
 
-    public List<Noticia> buscarPorData(LocalDate data) {
+    public Optional<List<Noticia>> buscarPorData(LocalDate data) {
+        if (data == null) {
+            return Optional.empty();
+        }
+
         try {
             String url = URL_BASE + "/?data=" + data;
             return fazerRequisicao(url);
@@ -72,11 +89,12 @@ public class NoticiaService {
         } catch (Exception e) {
             System.err.println("Erro inesperado ao buscar notícias por data: " + e.getMessage());
         }
-        return new ArrayList<>();
+
+        return Optional.empty();
     }
 
 
-    private List<Noticia> fazerRequisicao(String url) throws IOException, InterruptedException {
+    private Optional<List<Noticia>> fazerRequisicao(String url) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET()
@@ -101,6 +119,6 @@ public class NoticiaService {
             }
         }
 
-        return noticias;
+        return Optional.of(noticias);
     }
 } 

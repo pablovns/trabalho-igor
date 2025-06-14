@@ -21,6 +21,7 @@ public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, Json
     @Override
     public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         String dateStr = json.getAsString();
+
         for (DateTimeFormatter formatter : formatters) {
             try {
                 return LocalDateTime.parse(dateStr, formatter);
@@ -28,6 +29,7 @@ public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, Json
                 // Ignora a exceção e tenta o próximo formato
             }
         }
+
         throw new JsonParseException("Não foi possível converter a data: " + dateStr);
     }
 }

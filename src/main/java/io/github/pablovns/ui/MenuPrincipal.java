@@ -149,14 +149,16 @@ public class MenuPrincipal {
             return;
         }
 
-        List<Noticia> noticias = switch (opcao) {
+        Optional<List<Noticia>> optionalNoticias = switch (opcao) {
             case 1 -> noticiaService.buscarPorTitulo(lerTextoNaoVazio("Digite o título: "));
             case 2 -> noticiaService.buscarPorPalavrasChave(lerTextoNaoVazio("Digite as palavras-chave: "));
             case 3 -> noticiaService.buscarPorData(lerDataValida());
-            default -> null;
+            default -> Optional.empty();
         };
 
-        if (noticias == null || noticias.isEmpty()) {
+        List<Noticia> noticias = optionalNoticias.orElse(List.of());
+
+        if (noticias.isEmpty()) {
             System.out.println("Nenhuma notícia encontrada.");
             return;
         }
