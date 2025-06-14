@@ -11,19 +11,27 @@ public class OrdenadorNoticias {
         throw new IllegalStateException("Classe utilitária não deve ser instanciada");
     }
 
-    public static void ordenarPorTitulo(List<Noticia> noticias) {
-        noticias.sort(Comparator.comparing(Noticia::getTitulo));
+    public static List<Noticia> ordenarPorTitulo(List<Noticia> noticias) {
+        return noticias.stream()
+                .sorted(Comparator.comparing(Noticia::getTitulo))
+                .toList();
     }
 
-    public static void ordenarPorData(List<Noticia> noticias) {
-        noticias.sort(Comparator.comparing(Noticia::getDataPublicacao));
+    public static List<Noticia> ordenarPorData(List<Noticia> noticias) {
+        return noticias.stream()
+                .sorted(Comparator.comparing(Noticia::getDataPublicacao))
+                .toList();
     }
 
-    public static void ordenarPorTipo(List<Noticia> noticias) {
-        noticias.sort(Comparator.comparing(Noticia::getTipo));
+    public static List<Noticia> ordenarPorTipo(List<Noticia> noticias) {
+        return noticias.stream()
+                .sorted(Comparator.comparing(Noticia::getTipo))
+                .toList();
     }
 
-    public static void ordenarPorId(List<Noticia> noticias) {
-        noticias.sort(Comparator.comparing(Noticia::getId).reversed());
+    public static List<Noticia> ordenarPorId(List<Noticia> noticias) {
+        return noticias.stream()
+                .sorted(Comparator.comparing(Noticia::getId).reversed())
+                .toList();
     }
-} 
+}

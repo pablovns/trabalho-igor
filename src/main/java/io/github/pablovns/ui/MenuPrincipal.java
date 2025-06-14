@@ -169,8 +169,8 @@ public class MenuPrincipal {
 
     private void exibirNoticiasFavoritas() {
         System.out.println("\n=== Notícias Favoritas ===");
-        List<Noticia> favoritas = usuario.getNoticiasFavoritas();
-        if (favoritas.isEmpty()) {
+        List<Noticia> favoritas = usuario.listarNoticiasFavoritas();
+        if (favoritas == null || favoritas.isEmpty()) {
             System.out.println("Nenhuma notícia favorita.");
             return;
         }
@@ -180,8 +180,8 @@ public class MenuPrincipal {
 
     private void exibirNoticiasLidas() {
         System.out.println("\n=== Notícias Lidas ===");
-        List<Noticia> lidas = usuario.getNoticiasLidas();
-        if (lidas.isEmpty()) {
+        List<Noticia> lidas = usuario.listarNoticiasLidas();
+        if (lidas == null || lidas.isEmpty()) {
             System.out.println("Nenhuma notícia lida.");
             return;
         }
@@ -191,8 +191,8 @@ public class MenuPrincipal {
 
     private void exibirNoticiasParaLerDepois() {
         System.out.println("\n=== Para Ler Depois ===");
-        List<Noticia> paraLer = usuario.getNoticiasParaLerDepois();
-        if (paraLer.isEmpty()) {
+        List<Noticia> paraLer = usuario.listarNoticiasParaLerDepois();
+        if (paraLer == null || paraLer.isEmpty()) {
             System.out.println("Nenhuma notícia marcada para ler depois.");
             return;
         }
@@ -210,10 +210,10 @@ public class MenuPrincipal {
 
         int opcao = lerOpcaoValida(0, 3);
         switch (opcao) {
-            case 1 -> OrdenadorNoticias.ordenarPorTitulo(noticias);
-            case 2 -> OrdenadorNoticias.ordenarPorData(noticias);
-            case 3 -> OrdenadorNoticias.ordenarPorTipo(noticias);
-            default -> OrdenadorNoticias.ordenarPorId(noticias);
+            case 1 -> noticias = OrdenadorNoticias.ordenarPorTitulo(noticias);
+            case 2 -> noticias = OrdenadorNoticias.ordenarPorData(noticias);
+            case 3 -> noticias = OrdenadorNoticias.ordenarPorTipo(noticias);
+            default -> noticias = OrdenadorNoticias.ordenarPorId(noticias);
         }
 
         for (int i = 0; i < noticias.size(); i++) {
@@ -225,9 +225,9 @@ public class MenuPrincipal {
 
     private void interagirComNoticias(List<Noticia> noticias) {
         while (true) {
-            System.out.println("\nAções:");
+            System.out.println("\nAções disponíveis:");
             System.out.println("1. Marcar/Desmarcar como favorita");
-            System.out.println("2. Marcar como lida");
+            System.out.println("2. Marcar/Desmarcar como lida");
             System.out.println("3. Marcar/Desmarcar para ler depois");
             System.out.println("0. Voltar");
             System.out.println(ESCOLHA_UMA_OPCAO);
@@ -238,28 +238,29 @@ public class MenuPrincipal {
             }
 
             System.out.printf("Digite o número da notícia (1 a %d): ", noticias.size());
-            int numeroNoticia = lerOpcaoValida(1, noticias.size()) - 1;
-            Noticia noticia = noticias.get(numeroNoticia);
+            int indice = lerOpcaoValida(1, noticias.size()) - 1;
+            Noticia noticia = noticias.get(indice);
 
-            if (opcao == 1) {
-                if (noticia.isFavorita()) {
-                    usuario.removerNoticiaFavorita(noticia);
-                    System.out.println("Notícia removida dos favoritos.");
-                } else {
-                    usuario.adicionarNoticiaFavorita(noticia);
-                    System.out.println("Notícia adicionada aos favoritos.");
+            switch (opcao) {
+                case 1 -> {
+                    noticia.alterarFavorita();
+                    System.out.println(noticia.isFavorita()
+                            ? "Notícia marcada como \"favorita\"."
+                            : "Notícia desmarcada como \"favorita\".");
                 }
-            } else if (opcao == 2) {
-                usuario.marcarComoLida(noticia);
-                System.out.println("Notícia marcada como lida.");
-            } else if (opcao == 3) {
-                if (noticia.isParaLerDepois()) {
-                    usuario.removerParaLerDepois(noticia);
-                    System.out.println("Notícia removida da lista para ler depois.");
-                } else {
-                    usuario.adicionarParaLerDepois(noticia);
-                    System.out.println("Notícia adicionada à lista para ler depois.");
+                case 2 -> {
+                    noticia.alterarLida();
+                    System.out.println(noticia.isLida()
+                            ? "Notícia marcada como \"lida\"."
+                            : "Notícia desmarcada como \"lida\".");
                 }
+                case 3 -> {
+                    noticia.alterarLerDepois();
+                    System.out.println(noticia.isParaLerDepois()
+                            ? "Notícia marcada como \"para ler depois\"."
+                            : "Notícia desmarcada como \"para ler depois\".");
+                }
+                default -> System.out.println("Opção inválida. Por favor, tente novamente.");
             }
 
             usuarioService.salvarUsuario(usuario);

@@ -110,4 +110,16 @@ public class Noticia {
                 paraLerDepois ? "Para ler depois" : "Não marcada para ler depois"
         );
     }
-} 
+
+    public void alterarFavorita() {
+        favorita = !favorita; // só inverte o valor
+    }
+
+    public void alterarLida() {
+        lida = !lida; // só inverte o valor
+    }
+
+    public void alterarLerDepois() {
+        paraLerDepois = !paraLerDepois; // só inverte o valor
+    }
+}

@@ -8,15 +8,11 @@ import java.util.List;
  */
 public class Usuario {
     private String nome;
-    private final List<Noticia> noticiasFavoritas;
-    private final List<Noticia> noticiasLidas;
-    private final List<Noticia> noticiasParaLerDepois;
+    private final List<Noticia> noticias;
 
     // Construtor padrão necessário para o Gson
     public Usuario() {
-        this.noticiasFavoritas = new ArrayList<>();
-        this.noticiasLidas = new ArrayList<>();
-        this.noticiasParaLerDepois = new ArrayList<>();
+        this.noticias = new ArrayList<>();
     }
 
     public Usuario(String nome) {
@@ -28,46 +24,38 @@ public class Usuario {
         return nome;
     }
 
-    public List<Noticia> getNoticiasFavoritas() {
-        return noticiasFavoritas;
+    public List<Noticia> getNoticias() {
+        return noticias;
     }
 
-    public List<Noticia> getNoticiasLidas() {
-        return noticiasLidas;
-    }
-
-    public List<Noticia> getNoticiasParaLerDepois() {
-        return noticiasParaLerDepois;
-    }
-
-    public void adicionarNoticiaFavorita(Noticia noticia) {
-        if (!noticiasFavoritas.contains(noticia)) {
-            noticiasFavoritas.add(noticia);
-            noticia.setFavorita(true);
+    public List<Noticia> listarNoticiasFavoritas() {
+        if (noticias == null || noticias.isEmpty()) {
+            return List.of();
         }
+
+        return noticias.stream()
+                .filter(Noticia::isFavorita)
+                .toList();
     }
 
-    public void removerNoticiaFavorita(Noticia noticia) {
-        noticiasFavoritas.remove(noticia);
-        noticia.setFavorita(false);
-    }
-
-    public void marcarComoLida(Noticia noticia) {
-        if (!noticiasLidas.contains(noticia)) {
-            noticiasLidas.add(noticia);
-            noticia.setLida(true);
+    public List<Noticia> listarNoticiasLidas() {
+        if (noticias == null || noticias.isEmpty()) {
+            return List.of();
         }
+
+        return noticias.stream()
+                .filter(Noticia::isLida)
+                .toList();
     }
 
-    public void adicionarParaLerDepois(Noticia noticia) {
-        if (!noticiasParaLerDepois.contains(noticia)) {
-            noticiasParaLerDepois.add(noticia);
-            noticia.setParaLerDepois(true);
+    public List<Noticia> listarNoticiasParaLerDepois() {
+        if (noticias == null || noticias.isEmpty()) {
+            return List.of();
         }
+
+        return noticias.stream()
+                .filter(Noticia::isParaLerDepois)
+                .toList();
     }
 
-    public void removerParaLerDepois(Noticia noticia) {
-        noticiasParaLerDepois.remove(noticia);
-        noticia.setParaLerDepois(false);
-    }
-} 
+}
