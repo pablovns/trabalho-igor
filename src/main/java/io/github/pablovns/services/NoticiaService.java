@@ -26,6 +26,7 @@ public class NoticiaService {
         this.httpClient = HttpClient.newHttpClient();
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .registerTypeAdapter(TipoNoticia.class, new TipoNoticiaDeserializer())
                 .create();
     }
 
