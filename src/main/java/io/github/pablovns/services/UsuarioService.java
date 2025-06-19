@@ -1,6 +1,7 @@
 package io.github.pablovns.services;
 
 import com.google.gson.*;
+import io.github.pablovns.domain.Noticia;
 import io.github.pablovns.domain.Usuario;
 
 import java.io.File;
@@ -63,6 +64,18 @@ public class UsuarioService {
      * @param usuario O usuário a ser salvo
      */
     public void salvarUsuario(Usuario usuario) {
+        if (usuario == null) {
+            System.err.println("Usuário não pode ser nulo.");
+            return;
+        }
+
+        // Remove notícias que não são favoritas, lidas ou para ler depois
+        for (Noticia noticia : usuario.getNoticias()) {
+            if (!noticia.isFavorita() && !noticia.isLida() && !noticia.isParaLerDepois()) {
+                usuario.getNoticias().remove(noticia);
+            }
+        }
+
         try (FileWriter writer = new FileWriter(ARQUIVO_USUARIO)) {
             gson.toJson(usuario, writer);
         } catch (IOException e) {

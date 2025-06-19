@@ -79,13 +79,13 @@ public class MenuPrincipal {
         System.out.println("3. Notícias Lidas");
         System.out.println("4. Para Ler Depois");
         System.out.println("0. Sair");
-        System.out.println(ESCOLHA_UMA_OPCAO);
     }
 
     private int lerOpcaoValida(int min, int max) {
+        System.out.println(ESCOLHA_UMA_OPCAO);
         while (true) {
             String entrada = scanner.nextLine().trim();
-            try {
+            try { 
                 int opcao = Integer.parseInt(entrada);
                 if (opcao >= min && opcao <= max) {
                     return opcao;
@@ -142,7 +142,6 @@ public class MenuPrincipal {
         System.out.println("2. Buscar por palavras-chave");
         System.out.println("3. Buscar por data");
         System.out.println("0. Voltar");
-        System.out.println(ESCOLHA_UMA_OPCAO);
 
         int opcao = lerOpcaoValida(0, 3);
         if (opcao == 0) {
@@ -156,15 +155,15 @@ public class MenuPrincipal {
             default -> Optional.empty();
         };
 
-        List<Noticia> noticias = optionalNoticias.orElse(List.of());
+        List<Noticia> noticiasBusca = optionalNoticias.orElse(List.of());
 
-        if (noticias.isEmpty()) {
+        if (noticiasBusca.isEmpty()) {
             System.out.println("Nenhuma notícia encontrada.");
             return;
         }
 
-        exibirNoticias(noticias);
-        interagirComNoticias(noticias);
+        exibirNoticias(noticiasBusca);
+        interagirComNoticias(noticiasBusca);
     }
 
     private void exibirNoticiasFavoritas() {
@@ -206,7 +205,6 @@ public class MenuPrincipal {
         System.out.println("2. Data");
         System.out.println("3. Tipo");
         System.out.println("0. Não ordenar");
-        System.out.println(ESCOLHA_UMA_OPCAO);
 
         int opcao = lerOpcaoValida(0, 3);
         switch (opcao) {
@@ -216,9 +214,8 @@ public class MenuPrincipal {
             default -> noticias = OrdenadorNoticias.ordenarPorId(noticias);
         }
 
-        for (int i = 0; i < noticias.size(); i++) {
-            Noticia noticia = noticias.get(i);
-            System.out.printf("%n=== Notícia %d ===%n", i + 1);
+        for (Noticia noticia : noticias) {
+            System.out.printf("%n=== Notícia %d ===%n", noticia.getId());
             System.out.println(noticia);
         }
     }
@@ -230,7 +227,6 @@ public class MenuPrincipal {
             System.out.println("2. Marcar/Desmarcar como lida");
             System.out.println("3. Marcar/Desmarcar para ler depois");
             System.out.println("0. Voltar");
-            System.out.println(ESCOLHA_UMA_OPCAO);
 
             int opcao = lerOpcaoValida(0, 3);
             if (opcao == 0) {
@@ -239,31 +235,40 @@ public class MenuPrincipal {
 
             System.out.printf("Digite o número da notícia (1 a %d): ", noticias.size());
             int indice = lerOpcaoValida(1, noticias.size()) - 1;
-            Noticia noticia = noticias.get(indice);
+            Noticia noticiaTemporaria = noticias.get(indice);
+
+            // Verifica se a notícia já existe na lista do usuário
+            Optional<Noticia> noticiaExistente = usuario.obterNoticia(noticiaTemporaria.getId());
+            Noticia noticiaParaAtualizar = noticiaExistente.orElse(noticiaTemporaria);
 
             switch (opcao) {
                 case 1 -> {
-                    noticia.alterarFavorita();
-                    System.out.println(noticia.isFavorita()
+                    noticiaParaAtualizar.alterarFavorita();
+                    System.out.println(noticiaParaAtualizar.isFavorita()
                             ? "Notícia marcada como \"favorita\"."
                             : "Notícia desmarcada como \"favorita\".");
                 }
                 case 2 -> {
-                    noticia.alterarLida();
-                    System.out.println(noticia.isLida()
+                    noticiaParaAtualizar.alterarLida();
+                    System.out.println(noticiaParaAtualizar.isLida()
                             ? "Notícia marcada como \"lida\"."
                             : "Notícia desmarcada como \"lida\".");
                 }
                 case 3 -> {
-                    noticia.alterarLerDepois();
-                    System.out.println(noticia.isParaLerDepois()
+                    noticiaParaAtualizar.alterarLerDepois();
+                    System.out.println(noticiaParaAtualizar.isParaLerDepois()
                             ? "Notícia marcada como \"para ler depois\"."
                             : "Notícia desmarcada como \"para ler depois\".");
                 }
                 default -> System.out.println("Opção inválida. Por favor, tente novamente.");
             }
 
+            // Atualiza a notícia na lista do usuário
+            usuario.salvarOuAtualizarNoticia(noticiaParaAtualizar);
             usuarioService.salvarUsuario(usuario);
+
+            // Atualiza a notícia na lista temporária para refletir as mudanças
+            noticias.set(indice, noticiaParaAtualizar);
         }
     }
 } 

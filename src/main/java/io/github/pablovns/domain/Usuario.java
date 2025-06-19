@@ -2,6 +2,8 @@ package io.github.pablovns.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Classe que representa um usuário do sistema.
@@ -16,7 +18,7 @@ public class Usuario {
     }
 
     public Usuario(String nome) {
-        this();  // Chama o construtor padrão para inicializar as listas
+        this();
         this.nome = nome;
     }
 
@@ -28,34 +30,47 @@ public class Usuario {
         return noticias;
     }
 
-    public List<Noticia> listarNoticiasFavoritas() {
-        if (noticias == null || noticias.isEmpty()) {
-            return List.of();
-        }
+    public void salvarOuAtualizarNoticia(Noticia noticia) {
+        Optional<Noticia> noticiaOptional = obterNoticia(noticia.getId());
 
+        // Se a notícia já existe na lista de notícias do usuário, apenas atualiza os atributos
+        if (noticiaOptional.isPresent()) {
+            Noticia n = noticiaOptional.get();
+            n.setFavorita(noticia.isFavorita());
+            n.setLida(noticia.isLida());
+            n.setParaLerDepois(noticia.isParaLerDepois());
+        } else {
+            // Se a notícia não existe, adiciona à lista de notícias
+            noticias.add(noticia);
+        }
+    }
+
+    public boolean noticiaExiste(Long idNoticia) {
         return noticias.stream()
-                .filter(Noticia::isFavorita)
-                .toList();
+                .anyMatch(n -> n.getId().equals(idNoticia));
+    }
+
+    public Optional<Noticia> obterNoticia(Long idNoticia) {
+        return noticias.stream()
+                .filter(n -> n.getId().equals(idNoticia))
+                .findFirst();
+    }
+
+    public List<Noticia> listarNoticiasFavoritas() {
+        return filtrarNoticias(Noticia::isFavorita);
     }
 
     public List<Noticia> listarNoticiasLidas() {
-        if (noticias == null || noticias.isEmpty()) {
-            return List.of();
-        }
-
-        return noticias.stream()
-                .filter(Noticia::isLida)
-                .toList();
+        return filtrarNoticias(Noticia::isLida);
     }
 
     public List<Noticia> listarNoticiasParaLerDepois() {
-        if (noticias == null || noticias.isEmpty()) {
-            return List.of();
-        }
-
-        return noticias.stream()
-                .filter(Noticia::isParaLerDepois)
-                .toList();
+        return filtrarNoticias(Noticia::isParaLerDepois);
     }
 
+    private List<Noticia> filtrarNoticias(Predicate<Noticia> criterio) {
+        return noticias.stream()
+                .filter(criterio)
+                .toList();
+    }
 }
