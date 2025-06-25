@@ -131,6 +131,18 @@ public class MenuPrincipal {
             System.out.println(mensagem);
             String texto = scanner.nextLine().trim();
             if (!texto.isEmpty()) {
+                // Validação adicional de comprimento
+                if (texto.length() > 100) {
+                    System.out.println("Texto muito longo. Máximo 100 caracteres permitidos.");
+                    continue;
+                }
+                
+                // Validação de caracteres permitidos
+                if (!texto.matches("^[a-zA-ZÀ-ÿ0-9\\s\\-\\.,!?()]+$")) {
+                    System.out.println("Texto contém caracteres não permitidos. Use apenas letras, números, espaços e pontuação básica.");
+                    continue;
+                }
+                
                 return texto;
             }
             System.out.println("O texto não pode estar vazio. Por favor, tente novamente.");
