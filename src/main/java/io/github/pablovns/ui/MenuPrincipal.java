@@ -9,6 +9,7 @@ import io.github.pablovns.utils.OrdenadorNoticias;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -163,7 +164,6 @@ public class MenuPrincipal {
         }
 
         exibirNoticias(noticiasBusca);
-        interagirComNoticias(noticiasBusca);
     }
 
     private void exibirNoticiasFavoritas() {
@@ -174,7 +174,6 @@ public class MenuPrincipal {
             return;
         }
         exibirNoticias(favoritas);
-        interagirComNoticias(favoritas);
     }
 
     private void exibirNoticiasLidas() {
@@ -185,7 +184,6 @@ public class MenuPrincipal {
             return;
         }
         exibirNoticias(lidas);
-        interagirComNoticias(lidas);
     }
 
     private void exibirNoticiasParaLerDepois() {
@@ -196,7 +194,6 @@ public class MenuPrincipal {
             return;
         }
         exibirNoticias(paraLer);
-        interagirComNoticias(paraLer);
     }
 
     private void exibirNoticias(List<Noticia> noticias) {
@@ -207,17 +204,19 @@ public class MenuPrincipal {
         System.out.println("0. Não ordenar");
 
         int opcao = lerOpcaoValida(0, 3);
-        switch (opcao) {
-            case 1 -> noticias = OrdenadorNoticias.ordenarPorTitulo(noticias);
-            case 2 -> noticias = OrdenadorNoticias.ordenarPorData(noticias);
-            case 3 -> noticias = OrdenadorNoticias.ordenarPorTipo(noticias);
-            default -> noticias = OrdenadorNoticias.ordenarPorId(noticias);
-        }
+        List<Noticia> noticiasOrdenadas = switch (opcao) {
+            case 1 -> new ArrayList<>(OrdenadorNoticias.ordenarPorTitulo(noticias));
+            case 2 -> new ArrayList<>(OrdenadorNoticias.ordenarPorData(noticias));
+            case 3 -> new ArrayList<>(OrdenadorNoticias.ordenarPorTipo(noticias));
+            default -> new ArrayList<>(OrdenadorNoticias.ordenarPorId(noticias));
+        };
 
-        for (Noticia noticia : noticias) {
-            System.out.printf("%n=== Notícia %d ===%n", noticia.getId());
+        for (Noticia noticia : noticiasOrdenadas) {
+            System.out.printf("%n=== Notícia %d (ID %d) ===%n", noticiasOrdenadas.indexOf(noticia) + 1, noticia.getId());
             System.out.println(noticia);
         }
+        
+        interagirComNoticias(noticiasOrdenadas);
     }
 
     private void interagirComNoticias(List<Noticia> noticias) {

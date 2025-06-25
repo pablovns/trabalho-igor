@@ -105,9 +105,9 @@ public class Noticia {
                 dataPublicacao.format(FORMATADOR),
                 tipo.getDescricao(),
                 link,
-                lida ? "Lida" : "",
-                favorita ? "Favoritada" : "",
-                paraLerDepois ? "Marcada para ler depois" : ""
+                lida ? "Lida" : "Não lida",
+                favorita ? "Favoritada" : "Não favoritada",
+                paraLerDepois ? "Marcada para ler depois" : "Não marcada para ler depois"
         );
     }
 

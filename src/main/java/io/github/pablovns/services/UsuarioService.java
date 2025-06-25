@@ -1,7 +1,6 @@
 package io.github.pablovns.services;
 
 import com.google.gson.*;
-import io.github.pablovns.domain.Noticia;
 import io.github.pablovns.domain.Usuario;
 
 import java.io.File;
@@ -58,11 +57,6 @@ public class UsuarioService {
         }
     }
 
-    /**
-     * Salva os dados do usuário em arquivo JSON.
-     *
-     * @param usuario O usuário a ser salvo
-     */
     public void salvarUsuario(Usuario usuario) {
         if (usuario == null) {
             System.err.println("Usuário não pode ser nulo.");
@@ -70,11 +64,8 @@ public class UsuarioService {
         }
 
         // Remove notícias que não são favoritas, lidas ou para ler depois
-        for (Noticia noticia : usuario.getNoticias()) {
-            if (!noticia.isFavorita() && !noticia.isLida() && !noticia.isParaLerDepois()) {
-                usuario.getNoticias().remove(noticia);
-            }
-        }
+        usuario.getNoticias().removeIf(noticia -> 
+            !noticia.isFavorita() && !noticia.isLida() && !noticia.isParaLerDepois());
 
         try (FileWriter writer = new FileWriter(ARQUIVO_USUARIO)) {
             gson.toJson(usuario, writer);
@@ -83,11 +74,6 @@ public class UsuarioService {
         }
     }
 
-    /**
-     * Carrega os dados do usuário do arquivo JSON.
-     *
-     * @return O usuário carregado ou Optional vazio se não existir
-     */
     public Optional<Usuario> carregarUsuario() {
         File arquivo = new File(ARQUIVO_USUARIO);
         if (!arquivo.exists()) {
